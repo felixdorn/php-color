@@ -36,7 +36,9 @@ every color representation listed above.
 ## Creating a color
 
 ```php
-use Delight\Color\Rgba;$color = new Rgba(255, 0, 0, $alpha = 0.7);
+use Delight\Color\Rgba;
+
+$color = new Rgba(255, 0, 0, $alpha = 0.7);
 
 Rgba::random();
 
@@ -48,7 +50,9 @@ Rgba::fromString('rgba(255, 0, 0, 0.7)');
 ## Converting a color
 
 ```php
-use Delight\Color\Hsl;$color->toHex();
+use Delight\Color\Hsl;
+
+$color->toHex();
 $color->toRgb();
 $color->toRgba();
 $color->toHsl();
@@ -60,7 +64,9 @@ $color->convertTo(Hsl::class);
 ## Accessing Red, Green, Blue
 
 ```php
-use Delight\Color\Hsl;$color = Hsl::random();
+use Delight\Color\Hsl;
+
+$color = Hsl::random();
 
 $color->red();
 $color->green();
@@ -70,7 +76,9 @@ $color->blue();
 ## Brightness / Darkness
 
 ```php
-use Delight\Color\Rgb;$color = Rgb::random();
+use Delight\Color\Rgb;
+
+$color = Rgb::random();
 
 $color->isDark();
 $color->isBright();
@@ -83,7 +91,9 @@ $color->lighten($percentage = 15);
 ## Color legibility
 
 ```php
-use Delight\Color\Rgba;$color = Rgba::random();,
+use Delight\Color\Rgba;
+
+color = Rgba::random();,
 
 $color->isLegibleWithBackground(
     hex('#00ff00')
@@ -96,11 +106,12 @@ $color->isLegibleWithForeground(
 
 ## Luminance
 
-As
-in [https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef](https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef)
+As in [https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef](https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef)
 
 ```php
-use Delight\Color\Rgb;Rgb::random()->luminance();
+use Delight\Color\Rgb;
+
+Rgb::random()->luminance();
 ```
 
 ## Add macros
@@ -110,7 +121,9 @@ We use [illuminate/macroable](https://github.com/illuminate/macroable).
 ## To a single color representation
 
 ```php
-use Delight\Color\Hsl;Hsl::macro('darkenByTenPoints', function () {
+use Delight\Color\Hsl;
+
+Hsl::macro('darkenByTenPoints', function () {
     return $this->darken(10);
 });
 
@@ -120,12 +133,16 @@ Hsl::random()->darkenByTenPoints();
 ## To all color representations
 
 ```php
-\Delight\Color\Concerns\IsColor::macro('looksGood', function () {
+use Delight\Color\Concerns\IsColor;
+use Delight\Color\Rgb;
+use Delight\Color\Hsl;
+
+IsColor::macro('looksGood', function () {
     return true;
 });
 
-\Delight\Color\Rgb::random()->looksGood();
-\Delight\Color\Hsl::random()->looksGood();
+Rgb::random()->looksGood();
+Hsl::random()->looksGood();
 // ..., you got the idea.
 ```
 
