@@ -30,9 +30,6 @@ composer require delights/color
 * [Hsl](src/Hsl.php)
 * [Hsla](src/Hsla.php)
 
-We'll use the [Rgba](src/Rgba.php) color in the examples below but keep it mind that those methods are available for
-every color representation listed above.
-
 ## Creating a color
 
 ```php
