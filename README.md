@@ -115,8 +115,6 @@ Rgb::random()->luminance();
 
 We use [illuminate/macroable](https://github.com/illuminate/macroable).
 
-## To a single color representation
-
 ```php
 use Delight\Color\Hsl;
 
@@ -127,21 +125,6 @@ Hsl::macro('darkenByTenPoints', function () {
 Hsl::random()->darkenByTenPoints();
 ```
 
-## To all color representations
-
-```php
-use Delight\Color\Concerns\IsColor;
-use Delight\Color\Rgb;
-use Delight\Color\Hsl;
-
-IsColor::macro('looksGood', function () {
-    return true;
-});
-
-Rgb::random()->looksGood();
-Hsl::random()->looksGood();
-// ..., you got the idea.
-```
 
 ## Testing
 
