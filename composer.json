@@ -9,14 +9,13 @@
     }
   ],
   "require": {
-    "php": "^7.4",
-    "illuminate/macroable": "^8.35",
-    "ext-json": "*"
+    "php": "^8.0",
+    "illuminate/macroable": "^v8.62.0"
   },
   "require-dev": {
-    "pestphp/pest": "^0.3.8",
-    "friendsofphp/php-cs-fixer": "^2.16.4",
-    "phpstan/phpstan": "^0.12.48",
+    "pestphp/pest": "^v1.20.0",
+    "friendsofphp/php-cs-fixer": "^v2.19.2",
+    "phpstan/phpstan": "^0.12.99",
     "symfony/var-dumper": "^5.2.0"
   },
   "autoload": {
@@ -38,7 +37,7 @@
   "scripts": {
     "lint": "php-cs-fixer fix -v",
     "test:lint": "php-cs-fixer fix -v --dry-run",
-    "test:types": "phpstan analyse --ansi --memory-limit=0",
+    "test:types": "phpstan analyse --ansi --memory-limit=-1",
     "test:unit": "pest --colors=always",
     "test": [
       "@test:lint",

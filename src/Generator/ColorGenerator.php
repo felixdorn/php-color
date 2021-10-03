@@ -2,8 +2,6 @@
 
 namespace Delight\Color\Generator;
 
-use Delight\Color\Contracts\Color;
-use Delight\Color\Contracts\Ranker;
 use Delight\Color\Hsl;
 use Generator;
 use RuntimeException;
@@ -11,32 +9,42 @@ use RuntimeException;
 class ColorGenerator
 {
     protected int $sampleSize;
-    /** @var Ranker[] */
-    private array $rankers;
+    protected array $rankers;
 
-    /** @param Ranker[]|string[] $rankers */
     public function __construct(array $rankers = [], int $sampleSize = 100)
     {
         $this->rankers    = array_map(fn ($ranker) => is_string($ranker) ? new $ranker() : $ranker, $rankers);
         $this->sampleSize = $sampleSize;
     }
 
-    /** @return Color[] */
-    public function many(int $times): array
+    /**
+     * @return Generator<Hsl>
+     */
+    public function many(int $times): Generator
     {
-        return array_map(function () {
-            return $this->generate();
-        }, array_fill(0, $times, null));
+        for ($i = 0; $i < $times; $i++) {
+            yield $this->generate();
+        }
     }
 
     public function generate(): Hsl
     {
-        $population = $this->colors($this->sampleSize);
+        $population = [];
 
+        for ($i = 0; $i < $this->sampleSize; $i++) {
+            $population[] = Hsl::random();
+        }
+
+        return $this->best($population);
+    }
+
+    public function best(iterable $colors): Hsl
+    {
         $rankers = new Queue($this->rankers);
         $best    = null;
 
-        foreach ($population as $k => $color) {
+
+        foreach ($colors as $color) {
             $ranked = $rankers->rank(
                 new Rankeable($color)
             );
@@ -54,20 +62,6 @@ class ColorGenerator
             }
         }
 
-        if ($best === null) {
-            throw new RuntimeException('No good colors found on this sample size');
-        }
-
         return $best->color();
-    }
-
-    /**
-     * @return Generator<Hsl>
-     */
-    private function colors(int $sampleSize): Generator
-    {
-        for ($i = 0; $i < $sampleSize; $i++) {
-            yield Hsl::random();
-        }
     }
 }
