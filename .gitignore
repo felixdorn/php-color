@@ -4,3 +4,4 @@ composer.lock
 .php-cs-fixer.cache
 *.swp
 *.swo
+.php_cs.cache

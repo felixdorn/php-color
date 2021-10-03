@@ -60,6 +60,7 @@ class ColorGenerator
             }
         }
 
+        /* @phpstan-ignore-next-line  */
         return $best->color();
     }
 }
