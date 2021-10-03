@@ -66,7 +66,7 @@ class Hsl implements Color
             $rgb = [round(($x + $m) * 255), round($m * 255), round(($chroma + $m) * 255)];
         }
 
-        /** @phpstan-ignore-next-line */
+        /* @phpstan-ignore-next-line */
         if ($hue > 300 && $hue <= 360) {
             $rgb = [round(($chroma + $m) * 255), round($m * 255), round(($x + $m) * 255)];
         }

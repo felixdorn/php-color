@@ -4,7 +4,6 @@ namespace Delight\Color\Generator;
 
 use Delight\Color\Hsl;
 use Generator;
-use RuntimeException;
 
 class ColorGenerator
 {
@@ -42,7 +41,6 @@ class ColorGenerator
     {
         $rankers = new Queue($this->rankers);
         $best    = null;
-
 
         foreach ($colors as $color) {
             $ranked = $rankers->rank(
