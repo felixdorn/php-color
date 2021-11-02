@@ -13,9 +13,10 @@
     "savvot/random": "^0.3.0"
   },
   "require-dev": {
-    "pestphp/pest": "^v1.20.0",
     "friendsofphp/php-cs-fixer": "^v2.19.2",
+    "pestphp/pest": "^v1.20.0",
     "phpstan/phpstan": "^0.12.99",
+    "spatie/pest-plugin-snapshots": "^1.1",
     "symfony/var-dumper": "^5.2.0"
   },
   "autoload": {

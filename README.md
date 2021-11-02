@@ -39,6 +39,14 @@ $color->toHex();
 $color->toRgb();
 ```
 
+## Accessing Hue, Saturation, Luminance
+
+```php
+$color->hue; # between 0-360
+$color->saturation; # between 0-100
+$color->lumination; # between 0-100
+```
+
 ## Accessing Red, Green, Blue
 
 ```php
@@ -66,7 +74,6 @@ in [https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef](https:
 ```php
 $color->luminance();
 ```
-
 
 ## Testing
 

@@ -12,7 +12,7 @@ class Generator
     public static function manyLazily(int $n, ?string $seed = null): \Generator
     {
         for ($i = 0; $i < $n; $i++) {
-            yield self::one($seed);
+            yield self::one($seed . '_' . $i);
         }
     }
 
@@ -21,7 +21,8 @@ class Generator
         return Hsl::limitedRandom(
             hue: [0, 360],
             saturation: [50, 90],
-            lightness: [50, 70]
+            lightness: [50, 70],
+            seed: $seed
         );
     }
 }

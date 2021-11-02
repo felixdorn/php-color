@@ -4,9 +4,9 @@ namespace Delight\Color;
 
 class Hsl
 {
-    protected float $hue;
-    protected float $saturation;
-    protected float $lightness;
+    public float $hue;
+    public float $saturation;
+    public float $lightness;
 
     public function __construct(float $hue, float $saturation, float $lightness)
     {
@@ -84,17 +84,12 @@ class Hsl
 
     public function isDark(): bool
     {
-        return $this->lightness() <= 15;
-    }
-
-    public function lightness(): float
-    {
-        return $this->lightness;
+        return $this->lightness <= 15;
     }
 
     public function isBright(): bool
     {
-        return $this->lightness() >= 90;
+        return $this->lightness >= 90;
     }
 
     public function darken(int $percentage): self
@@ -104,16 +99,6 @@ class Hsl
             $this->saturation,
             $this->lightness - $percentage,
         );
-    }
-
-    public function hue(): float
-    {
-        return $this->hue;
-    }
-
-    public function saturation(): float
-    {
-        return $this->saturation;
     }
 
     public function lighten(int $percentage): self
