@@ -10,7 +10,7 @@
   ],
   "require": {
     "php": "^8.0",
-    "illuminate/macroable": "^v8.62.0"
+    "savvot/random": "^0.3.0"
   },
   "require-dev": {
     "pestphp/pest": "^v1.20.0",
