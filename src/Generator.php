@@ -12,7 +12,14 @@ class Generator
     public static function manyLazily(int $n, ?string $seed = null): \Generator
     {
         for ($i = 0; $i < $n; $i++) {
-            yield self::one($seed . '_' . $i);
+            $uniqueSeed = $seed;
+
+            if ($seed) {
+                $uniqueSeed .= "_{$i}";
+            }
+
+
+            yield self::one($uniqueSeed);
         }
     }
 
