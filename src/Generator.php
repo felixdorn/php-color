@@ -18,7 +18,6 @@ class Generator
                 $uniqueSeed .= "_{$i}";
             }
 
-
             yield self::one($uniqueSeed);
         }
     }

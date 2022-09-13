@@ -46,7 +46,7 @@ class Hsl
         $saturation = $this->saturation / 100;
         $lightness  = $this->lightness / 100;
         $c          = (1 - abs(2 * $lightness - 1)) * $saturation;
-        $x          = $c * (1 - abs(fmod(($this->hue / 60), 2) - 1));
+        $x          = $c * (1 - abs(fmod($this->hue / 60, 2) - 1));
         $m          = $lightness - ($c / 2);
 
         if ($this->hue < 60) {

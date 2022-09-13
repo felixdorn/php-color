@@ -8,7 +8,7 @@
 
 ## Installation
 
-> Requires [PHP 8.0.0+](https://php.net/releases)
+> Requires [PHP 8.1+](https://php.net/releases)
 
 You can install the package via composer:
 
@@ -70,8 +70,7 @@ $color->lighten($percentage = 15);
 
 ## Luminance
 
-As
-in [https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef](https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef)
+As in [https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef](https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef)
 
 ```php
 $color->luminance();
