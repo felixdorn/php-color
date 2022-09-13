@@ -2,9 +2,9 @@
 
 [![Tests](https://github.com/felixdorn/php-color/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/felixdorn/php-color/actions/workflows/tests.yml)
 [![Formats](https://github.com/felixdorn/php-color/actions/workflows/formats.yml/badge.svg?branch=master)](https://github.com/felixdorn/php-color/actions/workflows/formats.yml)
-[![Version](https://poser.pugx.org/felixdorn/php-color/version)](//packagist.org/packages/delights/color)
-[![Total Downloads](https://poser.pugx.org/felixdorn/php-color/downloads)](//packagist.org/packages/delights/color)
-[![License](https://poser.pugx.org/felixdorn/php-color/license)](//packagist.org/packages/delights/color)
+[![Version](https://poser.pugx.org/delights/color/version)](https://packagist.org/packages/delights/color)
+[![Total Downloads](https://poser.pugx.org/delights/color/downloads)](https://packagist.org/packages/delights/color)
+[![License](https://poser.pugx.org/delights/color/license)](https://packagist.org/packages/delights/color)
 
 ## Installation
 
