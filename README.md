@@ -66,6 +66,7 @@ Generator::withDefaults(
 use Delight\Color\Hsl;
 
 $color = new Hsl(100, 20, 20);
+$color = new Hsl(100, .2, .2); // automatically normalized to 0-100
 
 Hsl::boundedRandom([0, 360], [0,100], [0,100], $seed)
 
@@ -79,17 +80,20 @@ Hsl::fromString('hsl(100, 20%, 20%)');
 
 ### Converting a color
 
+Print a CSS string in the given format.
+
 ```php
 $color->toHex();
 $color->toRgb();
+$color->toHsl();
 ```
 
-###  Hue, saturation, luminance
+###  Hue, saturation, lightness
 
 ```php
 $color->hue; # between 0-360
 $color->saturation; # between 0-100
-$color->lumination; # between 0-100
+$color->lightness; # between 0-100
 ```
 
 ### Red, green, blue
@@ -100,7 +104,7 @@ $color->green();
 $color->blue();
 ```
 
-## Brightness, darkness, contrast
+## Brightness, darkness
 
 ```php
 $color->isDark();
@@ -109,8 +113,6 @@ $color->isBright();
 // Returns a new instance of the color
 $color->darken($percentage = 15);
 $color->lighten($percentage = 15);
-
-$color->contrast($otherColor);
 ```
 
 ## Luminance
@@ -119,6 +121,12 @@ As in <https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef>
 
 ```php
 $color->luminance();
+```
+
+## Contrast
+As in <https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef>. Very useful for accessibility testing.
+```php
+$color->contrast($otherColor);
 ```
 
 ## Testing
