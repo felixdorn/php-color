@@ -1,4 +1,4 @@
-# PHP Color
+g# PHP Color
 
 [![Tests](https://github.com/felixdorn/php-color/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/felixdorn/php-color/actions/workflows/tests.yml)
 [![Formats](https://github.com/felixdorn/php-color/actions/workflows/formats.yml/badge.svg?branch=master)](https://github.com/felixdorn/php-color/actions/workflows/formats.yml)
@@ -8,7 +8,7 @@
 
 ## Installation
 
-> Requires [PHP 8.1+](https://php.net/releases)
+> Requires [PHP 8.3+](https://php.net/releases)
 
 You can install the package via composer:
 
@@ -18,30 +18,73 @@ composer require delights/color
 
 ## Usage
 
-## Creating a color
+### Generating nice looking colors
+
+You can generate colors on the fly:
+
+```php
+use Delight\Color\Generator;
+
+Generator::one();
+Generator::many(n: 10)
+Generator::manyLazily(n: 10_000)
+```
+
+You may force the generator to use a certain seed:
+
+```php
+use Delight\Color\Generator;
+
+$avatarColor = Generator::one(seed: $email); // will always return the same color for the given seed.
+```
+
+This also works for `Generator::many` and `Generator::manyLazily`.
+
+
+You may change the defaults used by the `Generator`.
+
+```php
+use Delight\Color\Generator;
+
+Generator::withDefaults(
+    hue: [100, 200],
+    saturation: [1, 20],
+    lightness: [40, 60]
+);
+```
+
+Or some of the defaults
+```php
+Generator::withDefaults(
+    hue: [120, 140] // just restrict the hue but keep the saturation and lightness settings
+);
+```
+
+### Working with color
 
 ```php
 use Delight\Color\Hsl;
 
 $color = new Hsl(100, 20, 20);
 
-Hsl::limitedRandom([0, 360], [0,100], [0,100], $seed)
+Hsl::boundedRandom([0, 360], [0,100], [0,100], $seed)
 
 Hsl::random($seed);
 
+// Alphas are silently ignored.
+ // Works with rgb, rgba, hsla, hex...
+ // This accepts _CSS-like_ string, emphasis on _like_.
 Hsl::fromString('hsl(100, 20%, 20%)');
 ```
 
-## Converting a color
+### Converting a color
 
 ```php
 $color->toHex();
 $color->toRgb();
 ```
 
-## Accessing Hue, Saturation, Luminance
-
-
+###  Hue, saturation, luminance
 
 ```php
 $color->hue; # between 0-360
@@ -49,7 +92,7 @@ $color->saturation; # between 0-100
 $color->lumination; # between 0-100
 ```
 
-## Accessing Red, Green, Blue
+### Red, green, blue
 
 ```php
 $color->red();
@@ -57,7 +100,7 @@ $color->green();
 $color->blue();
 ```
 
-## Brightness / Darkness
+## Brightness, darkness, contrast
 
 ```php
 $color->isDark();
@@ -66,11 +109,13 @@ $color->isBright();
 // Returns a new instance of the color
 $color->darken($percentage = 15);
 $color->lighten($percentage = 15);
+
+$color->contrast($otherColor);
 ```
 
 ## Luminance
 
-As in [https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef](https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef)
+As in <https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef>
 
 ```php
 $color->luminance();

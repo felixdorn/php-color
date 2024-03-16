@@ -5,3 +5,6 @@ composer.lock
 *.swp
 *.swo
 .php_cs.cache
+.direnv
+coverage/
+.phpunit.cache
