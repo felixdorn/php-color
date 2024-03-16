@@ -99,6 +99,7 @@ $color->lightness; # between 0-100
 ### Red, green, blue
 
 ```php
+$color->colorChannels(); // returns [r, g, b]
 $color->red();
 $color->green();
 $color->blue();
