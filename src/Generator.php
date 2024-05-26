@@ -34,14 +34,24 @@ class Generator
         }
     }
 
-    /** @return Hsl[] */
-    public static function many(int $n, ?string $seed = null): array
+    /**
+     * @param array{0: int<0, 360>, 1: int<0, 360>}|null $hue
+     * @param array{0: int<0, 100>, 1: int<0, 100>}|null $saturation
+     * @param array{0: int<0, 100>, 1: int<0, 100>}|null $lightness
+     * @return Hsl[]
+     */
+    public static function many(int $n, ?string $seed = null,  ?array $hue = null, ?array $saturation = null, ?array $lightness = null): array
     {
-        return iterator_to_array(self::manyLazily($n, $seed));
+        return iterator_to_array(self::manyLazily($n, $seed, $hue, $saturation, $lightness));
     }
 
-    /** @return \Generator<Hsl> */
-    public static function manyLazily(int $n, ?string $seed = null): \Generator
+    /**
+     * @param array{0: int<0, 360>, 1: int<0, 360>}|null $hue
+     * @param array{0: int<0, 100>, 1: int<0, 100>}|null $saturation
+     * @param array{0: int<0, 100>, 1: int<0, 100>}|null $lightness
+     * @return \Generator<Hsl>
+     */
+    public static function manyLazily(int $n, ?string $seed = null,  ?array $hue = null, ?array $saturation = null, ?array $lightness = null): \Generator
     {
         for ($i = 0; $i < $n; $i++) {
             $uniqueSeed = $seed;
@@ -51,16 +61,21 @@ class Generator
                 $uniqueSeed .= "_{$i}";
             }
 
-            yield self::one($uniqueSeed);
+            yield self::one($uniqueSeed, $hue, $saturation, $lightness);
         }
     }
 
-    public static function one(?string $seed = null): Hsl
+    /**
+     * @param array{0: int<0, 360>, 1: int<0, 360>}|null $hue
+     * @param array{0: int<0, 100>, 1: int<0, 100>}|null $saturation
+     * @param array{0: int<0, 100>, 1: int<0, 100>}|null $lightness
+     */
+    public static function one(?string $seed = null, ?array $hue = null, ?array $saturation = null, ?array $lightness = null): Hsl
     {
         return Hsl::boundedRandom(
-            hue: static::$defaultHue,
-            saturation: static::$defaultSaturation,
-            lightness: static::$defaultLightness,
+            hue: $hue ?? static::$defaultHue,
+            saturation: $saturation ?? static::$defaultSaturation,
+            lightness: $lightness ?? static::$defaultLightness,
             seed: $seed
         );
     }
