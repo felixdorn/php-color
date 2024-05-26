@@ -336,7 +336,7 @@ class Hsl
         }, $this->colorChannels());
 
         // Normalized to return a value between 0 and 1
-        return ($R * 0.2126 + $G * 0.7152 + $B * 0.0722);
+        return $R * 0.2126 + $G * 0.7152 + $B * 0.0722;
     }
 
     /** @return string Returns the CSS representation of the HSL color: hsl(h, s%, l%) */
