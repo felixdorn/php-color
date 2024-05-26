@@ -65,6 +65,13 @@ class Hsl
         return static::boundedRandom([0, 360], [0, 100], [0, 100], $seed);
     }
 
+    /**
+     * @param array{0: int<0, 360>, 1: int<0, 360>} $hue
+     * @param array{0: int<0, 100>, 1: int<0, 100>} $saturation
+     * @param array{0: int<0, 100>, 1: int<0, 100>} $lightness
+     * @param string|null $seed
+     * @return Hsl
+     */
     public static function boundedRandom(array $hue, array $saturation, array $lightness, ?string $seed = null): Hsl
     {
         return new self(
@@ -175,6 +182,7 @@ class Hsl
 
     /**
      * @see {https://en.wikipedia.org/wiki/HSL_and_HSV#HSL_to_RGB_alternative} for implementation details
+     * @return array{0: int<0, 255>, 1: int<0,255>, 2: int<0,255>}
      */
     public function colorChannels(): array
     {
@@ -189,7 +197,8 @@ class Hsl
             return $l - $a * max(-1, min($k - 3, 9 - $k, 1));
         };
 
-        return [round($f(0) * 255), round($f(8) * 255), round($f(4) * 255)];
+        /** @phpstan-ignore-next-line PHPStan can't see that the ints are bounded between 0-255, it's fine. */
+        return [(int) round($f(0) * 255), (int) round($f(8) * 255), (int) round($f(4) * 255)];
     }
 
     public function toRgb(): string
