@@ -74,14 +74,17 @@ class Hsl
      */
     public static function boundedRandom(array $hue, array $saturation, array $lightness, ?string $seed = null): Hsl
     {
+        /** @phpstan-ignore smaller.alwaysFalse, greater.alwaysFalse, booleanOr.leftAlwaysFalse */
         if (count($hue) != 2 || $hue[0] > $hue[1] || $hue[1] > 360 || $hue[0] < 0) {
             throw new \UnexpectedValueException("The hue must be an array of the form [min, max] where min > 0 and max <= 360 and min <= max");
         }
 
+        /** @phpstan-ignore smaller.alwaysFalse, greater.alwaysFalse, booleanOr.leftAlwaysFalse */
         if (count($saturation) != 2 || $saturation[0] > $saturation[1] || $saturation[1] > 100 || $saturation[0] < 0) {
             throw new \UnexpectedValueException("The saturation must be an array of the form [min, max] where min > 0 and max <= 100 and min <= max");
         }
 
+        /** @phpstan-ignore smaller.alwaysFalse, greater.alwaysFalse, booleanOr.leftAlwaysFalse */
         if (count($lightness) != 2 || $lightness[0] > $lightness[1] || $lightness[1] > 100 || $lightness[0] < 0) {
             throw new \UnexpectedValueException("The lightness must be an array of the form [min, max] where min > 0 and max <= 100 and min <= max");
         }
@@ -187,6 +190,7 @@ class Hsl
         );
     }
 
+    /** @return int<0,255> */
     public function red(): int
     {
         return $this->colorChannels()[0];
@@ -268,11 +272,13 @@ class Hsl
         return '#' . $red . $green . $blue;
     }
 
+    /** @return int<0,255> */
     public function blue(): int
     {
         return $this->colorChannels()[2];
     }
 
+    /** @return int<0,255> */
     public function green(): int
     {
         return $this->colorChannels()[1];
@@ -280,6 +286,7 @@ class Hsl
 
     /**
      * @see {https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef}
+     * @return float between 0.0 and 21.0
      */
     public function contrast(Hsl $color): float
     {
@@ -294,6 +301,7 @@ class Hsl
 
     /**
      * @see {https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef}
+     * @return float between 0.0 and 1.0
      */
     public function luminance(): float
     {
