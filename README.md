@@ -17,8 +17,9 @@ composer require delights/color
 ```
 
 ### Features
+
 * Support HSL, HEX, RGB
-* Generate a color for a given seed (like a user email) 
+* Generate a color for a given seed (like a user email)
 * Darken, lighten the color.
 * Check the lightness, darkness
 * Check the contrast of two colors
@@ -28,9 +29,9 @@ composer require delights/color
 
 * [Generating nice looking colors](#generating-nice-looking-colors)
 * [Working with the HSL object](#working-with-the-hsl-object-)
-  * [From RGB to HSL](#from-rgb-to-hsl)
-  * [From Hex to HSL](#from-hex-to-hsl)
-  * [From CSS to HSL](#from-css-to-hsl)
+    * [From RGB to HSL](#from-rgb-to-hsl)
+    * [From Hex to HSL](#from-hex-to-hsl)
+    * [From CSS to HSL](#from-css-to-hsl)
 
 ## Usage
 
@@ -47,6 +48,7 @@ Generator::manyLazily(n: 10_000)
 ```
 
 **Important:** the colors generated are generate with the following defaults
+
 * Hue: [0, 360] (all hues)
 * Saturation: [50, 90] (out of [0, 100])
 * Lightness [50, 70] (out of [0, 100])
@@ -66,6 +68,7 @@ Generator::withDefaults(
 ```
 
 Or some of the defaults
+
 ```php
 Generator::withDefaults(
     hue: [120, 140] // just restrict the hue but keep the saturation and lightness settings
@@ -73,6 +76,7 @@ Generator::withDefaults(
 ```
 
 You may force the generator to use a certain seed:
+
 ```php
 $avatarColor = Generator::one(seed: $email); // will always return the same color for the given seed.
 ```
@@ -108,7 +112,7 @@ $avatarColor = Generator::one(hue: [0, 360], lightness: 50, saturation: 100)
 
 The generator returns `Hsl` objects. Let us see how they work.
 
-### Working with the HSL object. 
+### Working with the HSL object.
 
 You may be getting a color from somewhere which is not HSL, you can convert them:
 
@@ -177,11 +181,13 @@ $color->isBright();
 ```
 
 You may also specify a threshold, a number between 0 (darkest) and 100 (brightest):
+
 ```php
 $color->isDark(threshold: 5);
 ```
 
 You may darken or lighten a given color:
+
 ```php
 // Returns a new instance of the color
 $color->darken($percentage = 15);
@@ -190,16 +196,21 @@ $color->lighten($percentage = 15);
 
 ## Luminance
 
-As in <https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef>
+As in <https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef>. This is how bright, or how dark the color
+is. Instead of simply taking the average of the R, G, and B channel. This uses a formula that weights the R, G, B
+channels differently to produce a more accurate luminance value.
 
 ```php
-$color->luminance();
+$color->luminance(); // 0.0 - 1.0
 ```
 
 ## Contrast
+
 As in <https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef>. Very useful for accessibility testing.
+Returns a value between 1 and 21. Usually, this is written as 1:1 or 21:1. This returns "n:1".
+
 ```php
-$color->contrast($otherColor);
+$color->contrast($otherColor); // 1 - 21
 ```
 
 ## Testing
