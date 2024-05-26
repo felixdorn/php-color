@@ -167,6 +167,18 @@ $color->hue; # between 0-360
 $color->saturation; # between 0-100
 $color->lightness; # between 0-100
 
+$color->setHue(...)->setSaturation(...)->setLightness(...); // modifies the color
+$color->withHue(...) // returns a new instance
+$color->withSaturation(...); // returns a new instance
+$color->withLightness(...); // returns a new instance
+
+// If you chain more than one with...(), use clone() + set...() instead:
+$color->clone() 
+     ->setHue(...)
+     ->setSaturation(...)
+     ->setLightness().
+
+
 $color->colorChannels(); // returns [r, g, b]
 $color->red(); // 0-255
 $color->green(); // 0-255

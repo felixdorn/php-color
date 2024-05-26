@@ -320,6 +320,24 @@ class Hsl
         return $this;
     }
 
+    public function withLightness(float|int $lightness): Hsl {
+        return new Hsl($this->hue, $this->saturation, $lightness);
+    }
+
+    public function withSaturation(float|int $saturation): Hsl {
+        return new Hsl($this->hue, $saturation, $this->lightness);
+    }
+
+    public function withHue(int $hue): Hsl {
+        return new Hsl($hue, $this->saturation, $this->lightness);
+    }
+
+    public function clone()
+    {
+        return new Hsl($this->hue, $this->saturation, $this->lightness);
+    }
+
+
     public function setLightness(float|int $lightness): self
     {
         if ((int) $lightness > 100 || (int) $lightness < 0) {
