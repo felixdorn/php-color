@@ -7,7 +7,7 @@ class Hsl
     public const int IS_BRIGHT_THRESHOLD = 90;
     public const int IS_DARK_THRESHOLD   = 15;
 
-    public float $hue;
+    public int $hue;
     public float $saturation;
     public float $lightness;
 
@@ -28,34 +28,21 @@ class Hsl
     /x";
 
     /**
-     * @param float $hue        between 0 and 360
-     * @param float $saturation between 0 and 100
-     * @param float $lightness  between 0 and 100
+     * @param int       $hue        between 0 and 360
+     * @param float|int $saturation between 0 and 100
+     * @param float|int $lightness  between 0 and 100
      */
-    public function __construct(float $hue, float $saturation, float $lightness)
+    public function __construct(int $hue, float|int $saturation, float|int $lightness)
     {
-        // People can do the necessary angle conversion if needed, let's be dumb.
-        if ((int) $hue > 360 || (int) $hue < 0) {
-            throw new \InvalidArgumentException("Hue must be between 0 and 360, got: {$hue}");
-        }
-
-        if ((int) $saturation > 100 || (int) $saturation < 0) {
-            throw new \InvalidArgumentException("Saturation must be between 0 and 100, got: {$saturation}");
-        }
-
-        if ((int) $lightness > 100 || (int) $lightness < 0) {
-            throw new \InvalidArgumentException("Lightness must be between 0 and 100, got: {$lightness}");
-        }
-
         // If we get obvious percentages, convert them to our 0-100 scale.
         if ($saturation > 0 && $saturation <= 1 && $lightness > 0 && $lightness <= 1) {
             $saturation *= 100;
             $lightness *= 100;
         }
 
-        $this->hue        = $hue;
-        $this->saturation = $saturation;
-        $this->lightness  = $lightness;
+        $this->setHue($hue);
+        $this->setSaturation($saturation);
+        $this->setLightness($lightness);
     }
 
     public static function random(?string $seed = null): Hsl
@@ -119,7 +106,7 @@ class Hsl
 
         if (preg_match(static::HSL_CSS_REGEX, $color, $matches)) {
             // (float) will convert ".1" to "0.1"
-            return new Hsl((float) $matches[1], (float) $matches[2], (float) $matches[3]);
+            return new Hsl((int) $matches[1], (float) $matches[2], (float) $matches[3]);
         }
 
         throw new \InvalidArgumentException("The argument color expects a CSS-like string with either a hex code or a rgb, rgba, hsl, hsla function; got, `{$color}`");
@@ -196,7 +183,7 @@ class Hsl
         $saturation = ($delta / (1 - abs(2 * $lightness - 1)));
 
         return new Hsl(
-            $hue,
+            (int) $hue,
             round($saturation * 100, 1),
             round($lightness * 100, 1)
         );
@@ -319,6 +306,40 @@ class Hsl
         $darkest   = min($original, $against) + 0.05;
 
         return $brightest / $darkest;
+    }
+
+    public function setHue(int $hue): self
+    {
+        // People can do the necessary angle conversion if needed, let's be dumb.
+        if ($hue > 360 || $hue < 0) {
+            throw new \InvalidArgumentException("Hue must be between 0 and 360, got: {$hue}");
+        }
+
+        $this->hue = $hue;
+
+        return $this;
+    }
+
+    public function setLightness(float|int $lightness): self
+    {
+        if ((int) $lightness > 100 || (int) $lightness < 0) {
+            throw new \InvalidArgumentException("Lightness must be between 0 and 100, got: {$lightness}");
+        }
+
+        $this->lightness = $lightness;
+
+        return $this;
+    }
+
+    public function setSaturation(float|int $saturation): self
+    {
+        if ((int) $saturation > 100 || (int) $saturation < 0) {
+            throw new \InvalidArgumentException("Saturation must be between 0 and 100, got: {$saturation}");
+        }
+
+        $this->saturation = $saturation;
+
+        return $this;
     }
 
     /**
