@@ -135,7 +135,7 @@ This function silently ignores the transparent counterpart of the HSL, hex, and 
 \Delight\Color\Hsl::fromString("hsl(144, 100%, 14.4)")
 ```
 
-### From scratch
+#### From scratch
 
 ```php
 use Delight\Color\Hsl;
