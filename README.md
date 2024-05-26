@@ -40,15 +40,41 @@ $avatarColor = Generator::one(seed: $email); // will always return the same colo
 
 This also works for `Generator::many` and `Generator::manyLazily`.
 
+You may change the hue, saturation, and lightness ranges used to generate a color:
 
-You may change the defaults used by the `Generator`.
+```php
+use Delight\Color\Generator;
+
+$avatarColor = Generator::one(
+    hue: [100, 200],
+    lightness: [40, 80]
+);
+$avatarColor = Generator::many(
+    hue: null, // use global defaults
+    saturation: [100, 100]
+    lightness: [40, 80]
+);
+$avatarColor = Generator::manyLazily(
+    lightness: [50, 60]
+)
+```
+
+You can also specify a single number instead of a range.:
+
+```php
+use Delight\Color\Generator;
+
+$avatarColor = Generator::one(hue: [0, 360], lightness: 50, saturation: 100)
+```
+
+You may also change the defaults for all generated colors used by the `Generator`. 
 
 ```php
 use Delight\Color\Generator;
 
 Generator::withDefaults(
     hue: [100, 200],
-    saturation: [1, 20],
+    saturation: 50,
     lightness: [40, 60]
 );
 ```
@@ -83,9 +109,9 @@ Hsl::fromString('hsl(100, 20%, 20%)');
 Print a CSS string in the given format.
 
 ```php
-$color->toHex();
-$color->toRgb();
-$color->toHsl();
+$color->toHex(); // #000000
+$color->toRgb(); // rgb(0, 0, 0)
+$color->toHsl(); // hsl(0, 0, 0)
 ```
 
 ###  Hue, saturation, lightness
@@ -100,9 +126,9 @@ $color->lightness; # between 0-100
 
 ```php
 $color->colorChannels(); // returns [r, g, b]
-$color->red();
-$color->green();
-$color->blue();
+$color->red(); // 0-255
+$color->green(); // 0-255
+$color->blue(); // 0-255
 ```
 
 ## Brightness, darkness
@@ -114,6 +140,11 @@ $color->isBright();
 // Returns a new instance of the color
 $color->darken($percentage = 15);
 $color->lighten($percentage = 15);
+```
+
+You may also specify a threshold, a number between 0 (darkest) and 100 (brightest):
+```php
+$color->isDark(threshold: 5);
 ```
 
 ## Luminance

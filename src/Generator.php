@@ -32,12 +32,24 @@ class Generator
     }
 
     /**
-     * @param array{0: int<0, 360>, 1: int<0, 360>}|null $hue
-     * @param array{0: int<0, 100>, 1: int<0, 100>}|null $saturation
-     * @param array{0: int<0, 100>, 1: int<0, 100>}|null $lightness
+     * @param array{0: int<0, 360>, 1: int<0, 360>}|int<0,360>|null $hue
+     * @param array{0: int<0, 100>, 1: int<0, 100>}|int<0,100>|null $saturation
+     * @param array{0: int<0, 100>, 1: int<0, 100>}|int<0,100>|null $lightness
      */
-    public static function withDefaults(?array $hue = null, ?array $saturation = null, ?array $lightness = null): void
+    public static function withDefaults(array|int|null $hue = null, array|int|null $saturation = null, array|int|null $lightness = null): void
     {
+        if (is_int($hue)) {
+            $hue = [$hue, $hue];
+        }
+
+        if (is_int($saturation)) {
+            $saturation = [$saturation, $saturation];
+        }
+
+        if (is_int($lightness)) {
+            $lightness = [$lightness, $lightness];
+        }
+
         /* @phpstan-ignore smaller.alwaysFalse, greater.alwaysFalse, booleanOr.leftAlwaysFalse */
         if ($hue && (count($hue) != 2 || $hue[0] > $hue[1] || $hue[1] > 360 || $hue[0] < 0)) {
             throw new \UnexpectedValueException('The hue must be an array of the form [min, max] where min > 0 and max <= 360 and min <= max');
@@ -67,30 +79,31 @@ class Generator
     }
 
     /**
-     * @param array{0: int<0, 360>, 1: int<0, 360>}|null $hue
-     * @param array{0: int<0, 100>, 1: int<0, 100>}|null $saturation
-     * @param array{0: int<0, 100>, 1: int<0, 100>}|null $lightness
+     * @param array{0: int<0, 360>, 1: int<0, 360>}|int<0,360>|null $hue
+     * @param array{0: int<0, 100>, 1: int<0, 100>}|int<0,100>|null $saturation
+     * @param array{0: int<0, 100>, 1: int<0, 100>}|int<0,100>|null $lightness
      *
      * @return Hsl[]
      */
-    public static function many(int $n, ?string $seed = null, ?array $hue = null, ?array $saturation = null, ?array $lightness = null): array
+    public static function many(int $n, ?string $seed = null, array|int|null $hue = null, array|int|null $saturation = null, array|int|null $lightness = null): array
     {
         return iterator_to_array(self::manyLazily($n, $seed, $hue, $saturation, $lightness));
     }
 
     /**
-     * @param array{0: int<0, 360>, 1: int<0, 360>}|null $hue
-     * @param array{0: int<0, 100>, 1: int<0, 100>}|null $saturation
-     * @param array{0: int<0, 100>, 1: int<0, 100>}|null $lightness
+     * @param array{0: int<0, 360>, 1: int<0, 360>}|int<0,360>|null $hue
+     * @param array{0: int<0, 100>, 1: int<0, 100>}|int<0,100>|null $saturation
+     * @param array{0: int<0, 100>, 1: int<0, 100>}|int<0,100>|null $lightness
      *
      * @return \Generator<Hsl>
      */
-    public static function manyLazily(int $n, ?string $seed = null, ?array $hue = null, ?array $saturation = null, ?array $lightness = null): \Generator
+    public static function manyLazily(int $n, ?string $seed = null, array|int|null $hue = null, array|int|null $saturation = null, array|int|null $lightness = null): \Generator
     {
         for ($i = 0; $i < $n; $i++) {
             $uniqueSeed = $seed;
 
             // This part needs to be deterministic.
+            // Changing this is a breaking change.
             if ($seed) {
                 $uniqueSeed .= "_{$i}";
             }
@@ -100,11 +113,11 @@ class Generator
     }
 
     /**
-     * @param array{0: int<0, 360>, 1: int<0, 360>}|null $hue
-     * @param array{0: int<0, 100>, 1: int<0, 100>}|null $saturation
-     * @param array{0: int<0, 100>, 1: int<0, 100>}|null $lightness
+     * @param array{0: int<0, 360>, 1: int<0, 360>}|int<0,360>|null $hue
+     * @param array{0: int<0, 100>, 1: int<0, 100>}|int<0,100>|null $saturation
+     * @param array{0: int<0, 100>, 1: int<0, 100>}|int<0,100>|null $lightness
      */
-    public static function one(?string $seed = null, ?array $hue = null, ?array $saturation = null, ?array $lightness = null): Hsl
+    public static function one(?string $seed = null, array|int|null $hue = null, array|int|null $saturation = null, array|int|null $lightness = null): Hsl
     {
         return Hsl::boundedRandom(
             hue: $hue ?? static::$defaultHue,

@@ -4,8 +4,9 @@ namespace Delight\Color;
 
 class Hsl
 {
-    public const int BRIGHTNESS_THRESHOLD = 90;
-    public const int DARKNESS_THRESHOLD   = 15;
+    public const int IS_BRIGHT_THRESHOLD = 90;
+    public const int IS_DARK_THRESHOLD   = 15;
+
     public float $hue;
     public float $saturation;
     public float $lightness;
@@ -47,11 +48,8 @@ class Hsl
         }
 
         // If we get obvious percentages, convert them to our 0-100 scale.
-        if ($saturation > 0 && $saturation < 1) {
+        if ($saturation > 0 && $saturation <= 1 && $lightness > 0 && $lightness <= 1) {
             $saturation *= 100;
-        }
-
-        if ($lightness > 0 && $lightness < 1) {
             $lightness *= 100;
         }
 
@@ -66,12 +64,24 @@ class Hsl
     }
 
     /**
-     * @param array{0: int<0, 360>, 1: int<0, 360>} $hue
-     * @param array{0: int<0, 100>, 1: int<0, 100>} $saturation
-     * @param array{0: int<0, 100>, 1: int<0, 100>} $lightness
+     * @param array{0: int<0, 360>, 1: int<0, 360>}|int<0,360> $hue
+     * @param array{0: int<0, 100>, 1: int<0, 100>}|int<0,100> $saturation
+     * @param array{0: int<0, 100>, 1: int<0, 100>}|int<0,100> $lightness
      */
-    public static function boundedRandom(array $hue, array $saturation, array $lightness, ?string $seed = null): Hsl
+    public static function boundedRandom(array|int $hue, array|int $saturation, array|int $lightness, ?string $seed = null): Hsl
     {
+        if (is_int($hue)) {
+            $hue = [$hue, $hue];
+        }
+
+        if (is_int($saturation)) {
+            $saturation = [$saturation, $saturation];
+        }
+
+        if (is_int($lightness)) {
+            $lightness = [$lightness, $lightness];
+        }
+
         /* @phpstan-ignore smaller.alwaysFalse, greater.alwaysFalse, booleanOr.leftAlwaysFalse */
         if (count($hue) != 2 || $hue[0] > $hue[1] || $hue[1] > 360 || $hue[0] < 0) {
             throw new \UnexpectedValueException('The hue must be an array of the form [min, max] where min > 0 and max <= 360 and min <= max');
@@ -216,11 +226,13 @@ class Hsl
         return [(int) round($f(0) * 255), (int) round($f(8) * 255), (int) round($f(4) * 255)];
     }
 
+    /** @return string Returns the CSS representation of the equivalent color in RGB: rgb(r, g, b)   */
     public function toRgb(): string
     {
         return sprintf('rgb(%d, %d, %d)', $this->red(), $this->green(), $this->blue());
     }
 
+    /** @return string Returns the CSS representation of the HSL color: hsl(h, s%, l%) */
     public function toHsl(): string
     {
         return sprintf(
@@ -231,21 +243,25 @@ class Hsl
         );
     }
 
-    public function isDark(): bool
+    /* @param $threshold int A number between 0 and 100, 0 is darkest, 100 is brightest. */
+    public function isDark(int $threshold = self::IS_DARK_THRESHOLD): bool
     {
-        return $this->lightness <= static::DARKNESS_THRESHOLD;
+        return $this->lightness <= $threshold;
     }
 
-    public function isBright(): bool
+    /* @param $threshold int A number between 0 and 100, 0 is darkest, 100 is brightest. */
+    public function isBright(int $threshold = self::IS_BRIGHT_THRESHOLD): bool
     {
-        return $this->lightness >= static::BRIGHTNESS_THRESHOLD;
+        return $this->lightness >= $threshold;
     }
 
+    /* @param int $percentage A number between 0 and 100, for a given percentage n, the color will be darkened by n% */
     public function darken(int $percentage): self
     {
         return $this->lighten(-$percentage);
     }
 
+    /* @param int $percentage A number between -100 and 100, for a given percentage n, the color will be lightened by n%. A negative percentage means darken. */
     public function lighten(int $percentage): self
     {
         return new self(
@@ -255,11 +271,13 @@ class Hsl
         );
     }
 
+    /** @return string Returns the CSS representation of the HSL color: hsl(h, s%, l%) */
     public function __toString(): string
     {
         return $this->toHsl();
     }
 
+    /** @return string Returns the CSS representation of the equivalent color in HEX: #rrggbb   */
     public function toHex(): string
     {
         $rgb = $this->colorChannels();
@@ -319,6 +337,7 @@ class Hsl
         return $luminance / (0.02126 + 0.7152 + 0.0722);
     }
 
+    /** @return string Returns the CSS representation of the HSL color: hsl(h, s%, l%) */
     public function toString(): string
     {
         return (string) $this;
