@@ -158,8 +158,12 @@ class Hsl
     /**
      * @see {https://stackoverflow.com/a/39147465}
      */
-    public static function fromRGB(float $r, float $g, float $b): Hsl
+    public static function fromRGB(int $r, int $g, int $b): Hsl
     {
+        $r = (float) $r;
+        $g = (float) $g;
+        $b = (float) $b;
+
         $r /= 255;
         $g /= 255;
         $b /= 255;
