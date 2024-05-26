@@ -38,3 +38,21 @@ it('can generate colors lazily', function () {
         expect($color->toString())->toBe($colors[$lazy->key()]->toString());
     }
 });
+
+it('can change defaults', function () {
+    Generator::withDefaults([0, 120], null, [1, 2]);
+
+    expect(Generator::defaultHue())->toBe([0, 120])
+        ->and(Generator::defaultSaturation())->toBe([50, 90])
+        ->and(Generator::defaultLightness())->toBe([1, 2]);
+
+    Generator::withDefaults(null, [0, 0], null);
+
+    expect(Generator::defaultHue())->toBe([0, 120])
+        ->and(Generator::defaultSaturation())->toBe([0, 0])
+        ->and(Generator::defaultLightness())->toBe([1, 2]);
+});
+
+it('fails when setting invalid defaults', function ($h, $s, $l) {
+    Generator::withDefaults($h, $s, $l);
+})->with('invalidHSLRanges')->throws(UnexpectedValueException::class);

@@ -69,24 +69,22 @@ class Hsl
      * @param array{0: int<0, 360>, 1: int<0, 360>} $hue
      * @param array{0: int<0, 100>, 1: int<0, 100>} $saturation
      * @param array{0: int<0, 100>, 1: int<0, 100>} $lightness
-     * @param string|null $seed
-     * @return Hsl
      */
     public static function boundedRandom(array $hue, array $saturation, array $lightness, ?string $seed = null): Hsl
     {
-        /** @phpstan-ignore smaller.alwaysFalse, greater.alwaysFalse, booleanOr.leftAlwaysFalse */
+        /* @phpstan-ignore smaller.alwaysFalse, greater.alwaysFalse, booleanOr.leftAlwaysFalse */
         if (count($hue) != 2 || $hue[0] > $hue[1] || $hue[1] > 360 || $hue[0] < 0) {
-            throw new \UnexpectedValueException("The hue must be an array of the form [min, max] where min > 0 and max <= 360 and min <= max");
+            throw new \UnexpectedValueException('The hue must be an array of the form [min, max] where min > 0 and max <= 360 and min <= max');
         }
 
-        /** @phpstan-ignore smaller.alwaysFalse, greater.alwaysFalse, booleanOr.leftAlwaysFalse */
+        /* @phpstan-ignore smaller.alwaysFalse, greater.alwaysFalse, booleanOr.leftAlwaysFalse */
         if (count($saturation) != 2 || $saturation[0] > $saturation[1] || $saturation[1] > 100 || $saturation[0] < 0) {
-            throw new \UnexpectedValueException("The saturation must be an array of the form [min, max] where min > 0 and max <= 100 and min <= max");
+            throw new \UnexpectedValueException('The saturation must be an array of the form [min, max] where min > 0 and max <= 100 and min <= max');
         }
 
-        /** @phpstan-ignore smaller.alwaysFalse, greater.alwaysFalse, booleanOr.leftAlwaysFalse */
+        /* @phpstan-ignore smaller.alwaysFalse, greater.alwaysFalse, booleanOr.leftAlwaysFalse */
         if (count($lightness) != 2 || $lightness[0] > $lightness[1] || $lightness[1] > 100 || $lightness[0] < 0) {
-            throw new \UnexpectedValueException("The lightness must be an array of the form [min, max] where min > 0 and max <= 100 and min <= max");
+            throw new \UnexpectedValueException('The lightness must be an array of the form [min, max] where min > 0 and max <= 100 and min <= max');
         }
 
         return new self(
@@ -198,6 +196,7 @@ class Hsl
 
     /**
      * @see {https://en.wikipedia.org/wiki/HSL_and_HSV#HSL_to_RGB_alternative} for implementation details
+     *
      * @return array{0: int<0, 255>, 1: int<0,255>, 2: int<0,255>}
      */
     public function colorChannels(): array
@@ -213,7 +212,7 @@ class Hsl
             return $l - $a * max(-1, min($k - 3, 9 - $k, 1));
         };
 
-        /** @phpstan-ignore-next-line PHPStan can't see that the ints are bounded between 0-255, it's fine. */
+        /* @phpstan-ignore-next-line PHPStan can't see that the ints are bounded between 0-255, it's fine. */
         return [(int) round($f(0) * 255), (int) round($f(8) * 255), (int) round($f(4) * 255)];
     }
 
@@ -224,7 +223,12 @@ class Hsl
 
     public function toHsl(): string
     {
-        return sprintf('hsl(%f%%, %f%%, %f%%)', $this->hue, $this->saturation, $this->lightness);
+        return sprintf(
+            'hsl(%s, %s, %s)',
+            $this->hue,
+            $this->saturation . '%',
+            $this->lightness . '%'
+        );
     }
 
     public function isDark(): bool
@@ -253,12 +257,7 @@ class Hsl
 
     public function __toString(): string
     {
-        return sprintf(
-            'hsl(%s,%s,%s)',
-            $this->hue,
-            $this->saturation . '%',
-            $this->lightness . '%'
-        );
+        return $this->toHsl();
     }
 
     public function toHex(): string
@@ -286,6 +285,7 @@ class Hsl
 
     /**
      * @see {https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef}
+     *
      * @return float between 0.0 and 21.0
      */
     public function contrast(Hsl $color): float
@@ -301,6 +301,7 @@ class Hsl
 
     /**
      * @see {https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef}
+     *
      * @return float between 0.0 and 1.0
      */
     public function luminance(): float

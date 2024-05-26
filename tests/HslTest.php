@@ -40,7 +40,8 @@ it('can create a hsl color from a CSS-like string', function () {
 it('can convert an hsl color to string', function () {
     $color = new Hsl(151, 51, 52);
 
-    expect((string) $color)->toBe('hsl(151,51%,52%)');
+    expect((string) $color)->toBe('hsl(151, 51%, 52%)');
+    expect($color)->toHsl()->toBe('hsl(151, 51%, 52%)');
 });
 
 it('can convert an hsl color to hex', function () {
@@ -159,3 +160,18 @@ it('can create an hsl color from a css-like string', function () {
 it('throws an exception if it can not create an hsl color from a given string', function (string $str) {
     Hsl::fromString($str);
 })->with(['', 'Hello', 'gbr(1,3,3)'])->throws(InvalidArgumentException::class);
+
+it('fails when given invalid ranges', function ($h, $s, $l) {
+    Hsl::boundedRandom($h, $s, $l);
+})->with('invalidHSLRanges')->throws(UnexpectedValueException::class);
+
+it('fails when given invalid HSL values', function ($h, $s, $l) {
+    new Hsl($h, $s, $l);
+})->with([
+    [-1, 10, 10],
+    [400, 10, 10],
+    [10, -1, 10],
+    [10, 400, 10],
+    [10, 10, -1],
+    [10, 10, 400],
+])->throws(InvalidArgumentException::class);
