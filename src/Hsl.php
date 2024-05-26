@@ -74,6 +74,18 @@ class Hsl
      */
     public static function boundedRandom(array $hue, array $saturation, array $lightness, ?string $seed = null): Hsl
     {
+        if (count($hue) != 2 || $hue[0] > $hue[1] || $hue[1] > 360 || $hue[0] < 0) {
+            throw new \UnexpectedValueException("The hue must be an array of the form [min, max] where min > 0 and max <= 360 and min <= max");
+        }
+
+        if (count($saturation) != 2 || $saturation[0] > $saturation[1] || $saturation[1] > 100 || $saturation[0] < 0) {
+            throw new \UnexpectedValueException("The saturation must be an array of the form [min, max] where min > 0 and max <= 100 and min <= max");
+        }
+
+        if (count($lightness) != 2 || $lightness[0] > $lightness[1] || $lightness[1] > 100 || $lightness[0] < 0) {
+            throw new \UnexpectedValueException("The lightness must be an array of the form [min, max] where min > 0 and max <= 100 and min <= max");
+        }
+
         return new self(
             Random::between($hue[0], $hue[1], $seed),
             Random::between($saturation[0], $saturation[1], $seed),
