@@ -335,7 +335,6 @@ class Hsl
             return $channel <= 0.03928 ? $channel / 12.92 : (($channel + 0.055) / 1.055) ** 2.4;
         }, $this->colorChannels());
 
-        // Normalized to return a value between 0 and 1
         return $R * 0.2126 + $G * 0.7152 + $B * 0.0722;
     }
 
