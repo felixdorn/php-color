@@ -126,4 +126,34 @@ class Generator
             seed: $seed
         );
     }
+
+    /***
+     * @param int $n
+     * @param string|null $seed
+     * @param array{0: int<0, 100>, 1: int<0, 100>}|int<0,100>|null $saturation
+     * * @param array{0: int<0, 100>, 1: int<0, 100>}|int<0,100>|null $lightness
+     * @return \Generator<Hsl>
+     */
+    public static function maximizeHueDifferenceForConsecutiveColors(int $n, ?string $seed = null, array|int|null $saturation = null, array|int|null $lightness = null): \Generator {
+        $color = static::one($seed, 0, $saturation, $lightness);
+
+        if ($n <= 0) {
+            throw new \InvalidArgumentException("The number of colors must be greater than 0.");
+        }
+
+        $start = 0;
+        $end = $n - 1;
+
+        $angle = 360 / $n;
+
+        while ($start <= $end) {
+            yield $color->withHue($angle * $end);
+            $end--;
+
+            if ($start <= $end) {
+                yield $color->withHue($angle * $start);
+                $start++;
+            }
+        }
+    }
 }
