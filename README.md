@@ -24,6 +24,8 @@ composer require delights/color
 * Check the contrast of two colors
 * Parse colors from CSS
 
+### TOC
+
 * [Generating nice looking colors](#generating-nice-looking-colors)
 * [Working with the HSL object](#working-with-the-hsl-object-)
   * [From RGB to HSL](#from-rgb-to-hsl)
