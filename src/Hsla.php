@@ -246,7 +246,7 @@ class Hsla
     public function toHsla(): string
     {
         return sprintf(
-            'hsl(%d %s %s %g%%)',
+            'hsl(%d %s %s / %g%%)',
             $this->hue,
             $this->saturation . '%',
             $this->lightness . '%',
