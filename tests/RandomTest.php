@@ -1,6 +1,6 @@
 <?php
 
-use Delight\Color\Random;
+use Felix\PHPColor\Random;
 
 it('returns the same number with the same seed', function () {
     $seed = 'my_seeeeeeeed';

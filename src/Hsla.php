@@ -1,61 +1,66 @@
 <?php
 
-namespace Delight\Color;
+namespace Felix\PHPColor;
 
-class Hsl
+class Hsla
 {
     public const int IS_BRIGHT_THRESHOLD = 90;
     public const int IS_DARK_THRESHOLD   = 15;
 
-    public int $hue;
+    public float $hue;
     public float $saturation;
     public float $lightness;
+    public float $alpha;
 
-    // This is private because it does not handle alphas neatly and requires
-    // to check whether the first capture group has a length of 5 or 7 to validate it.
-    private const string HEX_REGEX = "/^\#?
+    protected const string HEX_REGEX = "/
+        \#?
         ([\da-fA-F]{1,8})
-    $/x";
-    public const string RGB_CSS_REGEX = "/rgba?\(
+    /x";
+
+    protected const string RGB_CSS_REGEX = "/^rgba?\(
         ([\d.]+)\s*,\s*
         ([\d.]+)\s*,\s*
         ([\d.]+)\s*,?\s*
-    /x";
-    public const string HSL_CSS_REGEX = "/hsla?\(
+    $/x";
+
+    protected const string HSL_CSS_REGEX = "/hsla?\(
         ([\d.]+)\s*,\s*
         ([\d.]+)%?\s*,\s*
         ([\d.]+)%?\s*,?\s*
     /x";
 
     /**
-     * @param int       $hue        between 0 and 360
+     * @param float|int $hue        between 0 and 360
      * @param float|int $saturation between 0 and 100
      * @param float|int $lightness  between 0 and 100
      */
-    public function __construct(int $hue, float|int $saturation, float|int $lightness)
+    public function __construct(int|float $hue, float|int $saturation, float|int $lightness, float|int $alpha)
     {
-        // If we get obvious percentages, convert them to our 0-100 scale.
-        if ($saturation > 0 && $saturation <= 1 && $lightness > 0 && $lightness <= 1) {
-            $saturation *= 100;
-            $lightness *= 100;
-        }
-
         $this->setHue($hue);
         $this->setSaturation($saturation);
         $this->setLightness($lightness);
+        $this->setAlpha($alpha);
     }
 
-    public static function random(?string $seed = null): Hsl
+    public static function random(?string $seed = null): Hsla
     {
-        return static::boundedRandom([0, 360], [0, 100], [0, 100], $seed);
+        return static::boundedRandom([0, 360], [0, 100], [0, 100], [0, 100], $seed);
     }
 
     /**
      * @param array{0: int<0, 360>, 1: int<0, 360>}|int<0,360> $hue
      * @param array{0: int<0, 100>, 1: int<0, 100>}|int<0,100> $saturation
      * @param array{0: int<0, 100>, 1: int<0, 100>}|int<0,100> $lightness
+     * @param array{0: int<0, 100>, 1: int<0, 100>}|int<0,100> $alpha
+     *
+     * @return array{
+     *     0: array{0: int<0, 360>, 1: int<0, 360>},
+     *     1: array{0: int<0, 100>, 1: int<0, 100>},
+     *     2: array{0: int<0, 100>, 1: int<0, 100>},
+     *     3: array{0: int<0, 100>, 1: int<0, 100>}
+     * }
      */
-    public static function boundedRandom(array|int $hue, array|int $saturation, array|int $lightness, ?string $seed = null): Hsl
+    public static function normalizeRange(array|int $hue, array|int $saturation, array|int $lightness, array|int $alpha): array
     {
         if (is_int($hue)) {
             $hue = [$hue, $hue];
@@ -69,57 +74,70 @@ class Hsl
             $lightness = [$lightness, $lightness];
         }
 
+        if (is_int($alpha)) {
+            $alpha = [$alpha, $alpha];
+        }
+
         /* @phpstan-ignore smaller.alwaysFalse, greater.alwaysFalse, booleanOr.leftAlwaysFalse */
         if (count($hue) != 2 || $hue[0] > $hue[1] || $hue[1] > 360 || $hue[0] < 0) {
-            throw new \UnexpectedValueException('The hue must be an array of the form [min, max] where min > 0 and max <= 360 and min <= max');
+            throw new \UnexpectedValueException('The hue must be an array of the form [min, max] where 360 >= max >= min > 0');
         }
 
         /* @phpstan-ignore smaller.alwaysFalse, greater.alwaysFalse, booleanOr.leftAlwaysFalse */
         if (count($saturation) != 2 || $saturation[0] > $saturation[1] || $saturation[1] > 100 || $saturation[0] < 0) {
-            throw new \UnexpectedValueException('The saturation must be an array of the form [min, max] where min > 0 and max <= 100 and min <= max');
+            throw new \UnexpectedValueException('The saturation must be an array of the form [min, max] where 100 >= max >= min > 0');
         }
 
         /* @phpstan-ignore smaller.alwaysFalse, greater.alwaysFalse, booleanOr.leftAlwaysFalse */
         if (count($lightness) != 2 || $lightness[0] > $lightness[1] || $lightness[1] > 100 || $lightness[0] < 0) {
-            throw new \UnexpectedValueException('The lightness must be an array of the form [min, max] where min > 0 and max <= 100 and min <= max');
+            throw new \UnexpectedValueException('The lightness must be an array of the form [min, max] where 100 >= max >= min > 0');
         }
+
+        /* @phpstan-ignore smaller.alwaysFalse, greater.alwaysFalse, booleanOr.leftAlwaysFalse */
+        if (count($alpha) != 2 || $alpha[0] > $alpha[1] || $alpha[1] > 100 || $alpha[0] < 0) {
+            throw new \UnexpectedValueException('The alpha must be an array of the form [min, max] where 100 >= max >= min > 0');
+        }
+
+        return [$hue, $saturation, $lightness, $alpha];
+    }
+
+    /**
+     * @param array{0: int<0, 360>, 1: int<0, 360>}|int<0,360> $hue
+     * @param array{0: int<0, 100>, 1: int<0, 100>}|int<0,100> $saturation
+     * @param array{0: int<0, 100>, 1: int<0, 100>}|int<0,100> $lightness
+     * @param array{0: int<0, 100>, 1: int<0, 100>}|int<0,100> $alpha
+     */
+    public static function boundedRandom(array|int $hue, array|int $saturation, array|int $lightness, array|int $alpha, ?string $seed = null): Hsla
+    {
+        [$hue, $saturation, $lightness, $alpha] = static::normalizeRange($hue, $saturation, $lightness, $alpha);
 
         return new self(
             Random::between($hue[0], $hue[1], $seed),
             Random::between($saturation[0], $saturation[1], $seed),
             Random::between($lightness[0], $lightness[1], $seed),
+            Random::between($alpha[0], $alpha[1], $seed)
         );
     }
 
-    /**
-     * Create an HSL object from a CSS-like string. Variants with transparency, e.g., rgba, are not supported.
-     */
-    public static function fromString(string $color): Hsl
+    public static function fromHex(string $hex): Hsla
     {
-        if (preg_match(self::HEX_REGEX, $color, $matches) && !in_array(strlen($matches[1]), [5, 7])) {
-            return self::fromHex($color);
-        }
-
-        if (preg_match(static::RGB_CSS_REGEX, $color, $matches)) {
-            return self::fromRGB((int) $matches[1], (int) $matches[2], (int) $matches[3]);
-        }
-
-        if (preg_match(static::HSL_CSS_REGEX, $color, $matches)) {
-            // (float) will convert ".1" to "0.1"
-            return new Hsl((int) $matches[1], (float) $matches[2], (float) $matches[3]);
-        }
-
-        throw new \InvalidArgumentException("The argument color expects a CSS-like string with either a hex code or a rgb, rgba, hsl, hsla function; got, `{$color}`");
-    }
-
-    public static function fromHex(string $hex): Hsl
-    {
-        if (!preg_match(self::HEX_REGEX, $hex, $matches) || in_array(strlen($matches[1]), [5, 7])) {
+        if (!preg_match(self::HEX_REGEX, $hex, $matches)) {
             throw new \InvalidArgumentException("Invalid hex value `{$hex}` ");
         }
 
-        if (str_starts_with($hex, '#')) {
+        if ($hex[0] === '#') {
             $hex = substr($hex, 1);
+        }
+
+        if (strlen($hex) === 5 || $hex !== $matches[1]) {
+            throw new \InvalidArgumentException("Invalid hex value `{$hex}` ");
+        }
+
+        $a = 1;
+
+        if (strlen($hex) === 8) {
+            $a   = hexdec(substr($hex, 6, 2)) / 255;
+            $hex = substr($hex, 0, 6);
         }
 
         $size = strlen($hex);
@@ -139,13 +157,13 @@ class Hsl
 
         [$r, $g, $b] = array_map('hexdec', str_split($hex, 2));
 
-        return static::fromRGB((int) $r, (int) $g, (int) $b);
+        return static::fromRGBA($r, $g, $b, $a);
     }
 
     /**
      * @see {https://stackoverflow.com/a/39147465}
      */
-    public static function fromRGB(int $r, int $g, int $b): Hsl
+    public static function fromRGBA(float|int $r, float|int $g, float|int $b, int|float $a): Hsla
     {
         $r = (float) $r;
         $g = (float) $g;
@@ -162,7 +180,7 @@ class Hsl
         $lightness  = ($channelMax + $channelMin) / 2;
 
         if ($delta === 0.0) {
-            return new Hsl(0, 0, round($lightness * 100, 1));
+            return new Hsla(0, 0, $lightness * 100, 1);
         }
 
         if ($channelMax === $r) {
@@ -174,7 +192,7 @@ class Hsl
             $hue = (($r - $g) / $delta) + 4;
         }
 
-        $hue = round($hue * 60, 1);
+        $hue = $hue * 60;
 
         if ($hue < 0) {
             $hue += 360;
@@ -182,14 +200,15 @@ class Hsl
 
         $saturation = ($delta / (1 - abs(2 * $lightness - 1)));
 
-        return new Hsl(
-            (int) $hue,
-            round($saturation * 100, 1),
-            round($lightness * 100, 1)
+        return new Hsla(
+            $hue,
+            $saturation * 100,
+            $lightness * 100,
+            $a
         );
     }
 
-    /** @return int<0,255> */
+    /** @return int<0,255> Non-alpha-premultiplied red channel */
     public function red(): int
     {
         return $this->colorChannels()[0];
@@ -213,24 +232,25 @@ class Hsl
             return $l - $a * max(-1, min($k - 3, 9 - $k, 1));
         };
 
-        /* @phpstan-ignore-next-line PHPStan can't see that the ints are bounded between 0-255, it's fine. */
+        /* @phpstan-ignore-next-line PHPStan can't see that the integers are bounded between 0-255, it's fine. */
         return [(int) round($f(0) * 255), (int) round($f(8) * 255), (int) round($f(4) * 255)];
     }
 
     /** @return string Returns the CSS representation of the equivalent color in RGB: rgb(r, g, b)   */
-    public function toRgb(): string
+    public function toRgba(): string
     {
-        return sprintf('rgb(%d, %d, %d)', $this->red(), $this->green(), $this->blue());
+        return sprintf('rgba(%d, %d, %d, %f)', $this->red(), $this->green(), $this->blue(), $this->alpha / 100);
     }
 
     /** @return string Returns the CSS representation of the HSL color: hsl(h, s%, l%) */
-    public function toHsl(): string
+    public function toHsla(): string
     {
         return sprintf(
-            'hsl(%s, %s, %s)',
+            'hsl(%d %s %s %g%%)',
             $this->hue,
             $this->saturation . '%',
-            $this->lightness . '%'
+            $this->lightness . '%',
+            $this->alpha
         );
     }
 
@@ -258,14 +278,15 @@ class Hsl
         return new self(
             $this->hue,
             $this->saturation,
-            min(100, max(0, $this->lightness + $percentage))
+            min(100, max(0, $this->lightness + $percentage)),
+            $this->alpha
         );
     }
 
-    /** @return string Returns the CSS representation of the HSL color: hsl(h, s%, l%) */
+    /** @return string Returns the CSS representation of the HSL color: hsla(h, s%, l%, a) */
     public function __toString(): string
     {
-        return $this->toHsl();
+        return $this->toHsla();
     }
 
     /** @return string Returns the CSS representation of the equivalent color in HEX: #rrggbb   */
@@ -297,7 +318,7 @@ class Hsl
      *
      * @return float between 0.0 and 21.0
      */
-    public function contrast(Hsl $color): float
+    public function contrast(Hsla $color): float
     {
         $original = $this->luminance();
         $against  = $color->luminance();
@@ -308,7 +329,7 @@ class Hsl
         return $brightest / $darkest;
     }
 
-    public function setHue(int $hue): self
+    public function setHue(float|int $hue): self
     {
         // People can do the necessary angle conversion if needed, let's be dumb.
         if ($hue > 360 || $hue < 0) {
@@ -320,23 +341,30 @@ class Hsl
         return $this;
     }
 
-    public function withLightness(float|int $lightness): Hsl {
-        return new Hsl($this->hue, $this->saturation, $lightness);
-    }
-
-    public function withSaturation(float|int $saturation): Hsl {
-        return new Hsl($this->hue, $saturation, $this->lightness);
-    }
-
-    public function withHue(int $hue): Hsl {
-        return new Hsl($hue, $this->saturation, $this->lightness);
-    }
-
-    public function clone()
+    public function withLightness(float|int $lightness): Hsla
     {
-        return new Hsl($this->hue, $this->saturation, $this->lightness);
+        return new Hsla($this->hue, $this->saturation, $lightness, $this->alpha);
     }
 
+    public function withSaturation(float|int $saturation): Hsla
+    {
+        return new Hsla($this->hue, $saturation, $this->lightness, $this->alpha);
+    }
+
+    public function withHue(int $hue): Hsla
+    {
+        return new Hsla($hue, $this->saturation, $this->lightness, $this->alpha);
+    }
+
+    public function withAlpha(float|int $alpha): Hsla
+    {
+        return new Hsla($this->hue, $this->saturation, $this->lightness, $alpha);
+    }
+
+    public function clone(): Hsla
+    {
+        return new Hsla($this->hue, $this->saturation, $this->lightness, $this->alpha);
+    }
 
     public function setLightness(float|int $lightness): self
     {
@@ -356,6 +384,21 @@ class Hsl
         }
 
         $this->saturation = $saturation;
+
+        return $this;
+    }
+
+    public function setAlpha(float|int $alpha): self
+    {
+        if ($alpha > 0 && $alpha <= 1) {
+            $alpha *= 100;
+        }
+
+        if ((int) $alpha > 100 || (int) $alpha < 0) {
+            throw new \InvalidArgumentException("Alpha must be between 0 and 100, got: {$alpha}");
+        }
+
+        $this->alpha = $alpha;
 
         return $this;
     }

@@ -2,51 +2,61 @@
     {
         "hue": 87,
         "saturation": 59,
-        "lightness": 55
+        "lightness": 55,
+        "alpha": 24
     },
     {
         "hue": 112,
         "saturation": 62,
-        "lightness": 56
+        "lightness": 56,
+        "alpha": 31
     },
     {
         "hue": 87,
         "saturation": 59,
-        "lightness": 55
+        "lightness": 55,
+        "alpha": 24
     },
     {
         "hue": 114,
         "saturation": 62,
-        "lightness": 56
+        "lightness": 56,
+        "alpha": 31
     },
     {
         "hue": 237,
         "saturation": 76,
-        "lightness": 63
+        "lightness": 63,
+        "alpha": 66
     },
     {
         "hue": 331,
         "saturation": 87,
-        "lightness": 69
+        "lightness": 69,
+        "alpha": 92
     },
     {
         "hue": 13,
         "saturation": 51,
-        "lightness": 50
+        "lightness": 50,
+        "alpha": 3
     },
     {
         "hue": 295,
         "saturation": 83,
-        "lightness": 67
+        "lightness": 67,
+        "alpha": 82
     },
     {
         "hue": 82,
         "saturation": 59,
-        "lightness": 54
+        "lightness": 54,
+        "alpha": 22
     },
     {
         "hue": 85,
         "saturation": 59,
-        "lightness": 54
+        "lightness": 54,
+        "alpha": 23
     }
 ]

@@ -1,6 +1,6 @@
 <?php
 
-use Delight\Color\Generator;
+use Felix\PHPColor\Generator;
 
 use function Spatie\Snapshots\assertMatchesJsonSnapshot;
 

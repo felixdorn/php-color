@@ -1,6 +1,6 @@
 {
-  "name": "delights/color",
-  "description": "Convert and randomly generate good looking colors like a breeze",
+  "name": "felixdorn/php-color",
+  "description": "A simple library to work and smartly generate colors in PHP",
   "license": "MIT",
   "authors": [
     {
@@ -21,12 +21,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Delight\\Color\\": "src/"
+      "Felix\\PHPColor\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Delight\\Color\\Tests\\": "tests/"
+      "Felix\\PHPColor\\Tests\\": "tests/"
     }
   },
   "minimum-stability": "dev",

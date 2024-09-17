@@ -1,6 +1,6 @@
 <?php
 
-namespace Delight\Color;
+namespace Felix\PHPColor;
 
 use Savvot\Random\MtRand;
 
